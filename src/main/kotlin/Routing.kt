@@ -15,7 +15,7 @@ fun Application.configureRouting() {
     val todoController: TodoController by inject()
 
     install(StatusPages) {
-        // Tangkap AppException
+        // Menangkap AppException untuk error yang disengaja (400, 404, dll)
         exception<AppException> { call, cause ->
             val dataMap: Map<String, List<String>> = parseMessageToMap(cause.message)
 
@@ -23,16 +23,17 @@ fun Application.configureRouting() {
                 status = HttpStatusCode.fromValue(cause.code),
                 message = ErrorResponse(
                     status = "fail",
-                    message = if (dataMap.isEmpty()) cause.message else "Data yang dikirimkan tidak valid!",
+                    // Mengembalikan "Data yang dikirimkan tidak valid!" jika ada detail field error
+                    message = if (dataMap.isNotEmpty()) "Data yang dikirimkan tidak valid!" else cause.message,
                     data = dataMap
                 )
             )
         }
 
-        // Tangkap semua Throwable lainnya
+        // Menangkap semua error sistem lainnya (500)
         exception<Throwable> { call, cause ->
             call.respond(
-                status = HttpStatusCode.fromValue(500),
+                status = HttpStatusCode.InternalServerError,
                 message = ErrorResponse(
                     status = "error",
                     message = cause.message ?: "Unknown error",
@@ -63,6 +64,5 @@ fun Application.configureRouting() {
                 todoController.deleteTodo(call)
             }
         }
-
     }
 }
