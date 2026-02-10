@@ -1,0 +1,69 @@
+### Global Variabel
+#@BaseUrl = http://127.0.0.1:8080
+#
+#
+### Todos
+### ============================================================
+#
+#
+#### Mengambil semua data todos
+## @name GetAllTodos
+#GET {{BaseUrl}}/todos
+#Content-Type: application/json
+#
+#
+#### Menambahkan data todo baru
+## @name PostTodo
+#POST {{BaseUrl}}/todos
+#Content-Type: application/json
+#
+#{
+#  "title": "Latihan Ktor",
+#  "description": "Ktor adalah framework kotlin untuk BE dan FE"
+#}
+
+## Global Variabel
+@BaseUrl = http://127.0.0.1:8080
+
+## Todos
+## ===========================================
+
+### Mengambil semua data todos
+# @name GetAllTodos
+GET {{BaseUrl}}/todos
+Content-Type: application/json
+
+### Menambahkan data todo baru
+# @name PostTodo
+POST {{BaseUrl}}/todos
+Content-Type: application/json
+
+{
+  "title": "Latihan Ktor",
+  "description": "Ktor adalah framework kotlin untuk BE dan FE"
+}
+
+> {%
+    client.global.set("todoId", response.body.data.todoId);
+%}
+
+### Mengambil data todo berdasarkan id-nya
+# @name GetTodoById
+GET {{BaseUrl}}/todos/{{todoId}}
+Content-Type: application/json
+
+### Mengubah data todo berdasarkan id-nya
+# @name PutTodo
+PUT {{BaseUrl}}/todos/{{todoId}}
+Content-Type: application/json
+
+{
+  "title": "Latihan Ktor Update",
+  "description": "Ktor adalah framework kotlin untuk BE dan FE",
+  "isDone": true
+}
+
+### Menghapus data todo berdasarkan id-nya
+# @name DeleteTodo
+DELETE {{BaseUrl}}/todos/{{todoId}}
+Content-Type: application/json
