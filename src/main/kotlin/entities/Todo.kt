@@ -1,11 +1,11 @@
 package org.delcom.entities
 
-
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 import java.util.*
-import kotlin.time.Clock
 import kotlin.time.Instant
+import kotlin.time.Clock
 
 @Serializable
 data class Todo(

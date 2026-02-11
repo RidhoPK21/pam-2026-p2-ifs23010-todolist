@@ -36,20 +36,12 @@ class TodoController(private val todoService: ITodoService) {
     }
 
     suspend fun createTodo(call: ApplicationCall) {
-        // Gunakan try-catch untuk menangani body request yang kosong atau tidak valid
-        val request = try {
-            call.receive<TodoRequest>()
-        } catch (e: Exception) {
-            // Melempar AppException agar ditangkap oleh StatusPages dan menghasilkan status 400
-            // Pesan diformat agar ValidatorHelper/parseMessageToMap menghasilkan field title dan description
-            throw AppException(400, "title: Judul tidak boleh kosong|description: Deskripsi tidak boleh kosong")
-        }
+        val request = call.receive<TodoRequest>()
 
         val requestData = mapOf(
             "title" to request.title,
             "description" to request.description
         )
-
         val validatorHelper = ValidatorHelper(requestData)
         validatorHelper.required("title", "Judul tidak boleh kosong")
         validatorHelper.required("description", "Deskripsi tidak boleh kosong")
@@ -68,18 +60,12 @@ class TodoController(private val todoService: ITodoService) {
     suspend fun updateTodo(call: ApplicationCall) {
         val id = call.parameters["id"]
             ?: throw AppException(400, "ID todo tidak boleh kosong!")
-
-        val request = try {
-            call.receive<TodoRequest>()
-        } catch (e: Exception) {
-            throw AppException(400, "title: Judul tidak boleh kosong|description: Deskripsi tidak boleh kosong")
-        }
+        val request = call.receive<TodoRequest>()
 
         val requestData = mapOf(
             "title" to request.title,
             "description" to request.description
         )
-
         val validatorHelper = ValidatorHelper(requestData)
         validatorHelper.required("title", "Judul tidak boleh kosong")
         validatorHelper.required("description", "Deskripsi tidak boleh kosong")

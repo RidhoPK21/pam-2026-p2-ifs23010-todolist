@@ -1,5 +1,6 @@
 package org.delcom
 
+
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.plugins.statuspages.StatusPages
@@ -15,7 +16,7 @@ fun Application.configureRouting() {
     val todoController: TodoController by inject()
 
     install(StatusPages) {
-        // Menangkap AppException untuk error yang disengaja (400, 404, dll)
+        // Tangkap AppException
         exception<AppException> { call, cause ->
             val dataMap: Map<String, List<String>> = parseMessageToMap(cause.message)
 
@@ -23,17 +24,16 @@ fun Application.configureRouting() {
                 status = HttpStatusCode.fromValue(cause.code),
                 message = ErrorResponse(
                     status = "fail",
-                    // Mengembalikan "Data yang dikirimkan tidak valid!" jika ada detail field error
-                    message = if (dataMap.isNotEmpty()) "Data yang dikirimkan tidak valid!" else cause.message,
+                    message = if (dataMap.isEmpty()) cause.message else "Data yang dikirimkan tidak valid!",
                     data = dataMap
                 )
             )
         }
 
-        // Menangkap semua error sistem lainnya (500)
+        // Tangkap semua Throwable lainnya
         exception<Throwable> { call, cause ->
             call.respond(
-                status = HttpStatusCode.InternalServerError,
+                status = HttpStatusCode.fromValue(500),
                 message = ErrorResponse(
                     status = "error",
                     message = cause.message ?: "Unknown error",
@@ -44,7 +44,7 @@ fun Application.configureRouting() {
 
     routing {
         get("/") {
-            call.respondText("11S23010 - Ridho Alexander Pakpahan")
+            call.respondText("11S23033 - Josua Asido Prima Silalahi")
         }
 
         route("/todos") {
@@ -64,5 +64,6 @@ fun Application.configureRouting() {
                 todoController.deleteTodo(call)
             }
         }
+
     }
 }
